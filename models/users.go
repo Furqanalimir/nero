@@ -34,7 +34,7 @@ type User struct {
 func (u *User) Create() (*User, error) {
 	// initialize database
 	db := db.GetDB()
-	// initialize uuid to get id
+
 	user, _ := GetByPhone(u.Phone)
 	if len(user.ID) > 0 || user.Phone > 0 {
 		return nil, errors.New("User alrady exists.")

@@ -1,0 +1,238 @@
+definitions:
+  forms.Authenticate:
+    properties:
+      password:
+        type: string
+      phone:
+        type: integer
+    type: object
+  forms.InfoSwaggerForm:
+    properties:
+      price:
+        type: integer
+      productId:
+        type: string
+      productName:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  forms.OrderSwaggerForm:
+    properties:
+      currency:
+        type: string
+      info:
+        items:
+          $ref: '#/definitions/forms.InfoSwaggerForm'
+        type: array
+      tax:
+        type: number
+      total:
+        type: integer
+    type: object
+  forms.ReqResSwagger:
+    properties:
+      data:
+        $ref: '#/definitions/forms.data'
+      error:
+        type: string
+    type: object
+  forms.data:
+    type: object
+  models.Info:
+    properties:
+      price:
+        type: integer
+      product_id:
+        type: string
+      product_name:
+        minLength: 3
+        type: string
+      quantity:
+        type: integer
+    required:
+    - price
+    - product_id
+    - product_name
+    type: object
+  models.Order:
+    properties:
+      createdAt:
+        type: string
+      currency:
+        type: string
+      info:
+        items:
+          $ref: '#/definitions/models.Info'
+        type: array
+      order_id:
+        type: string
+      tax:
+        type: number
+      total:
+        type: integer
+      user_id:
+        type: string
+    required:
+    - currency
+    - tax
+    - total
+    - user_id
+    type: object
+  models.User:
+    properties:
+      active:
+        type: boolean
+      age:
+        type: integer
+      createdAt:
+        type: integer
+      dob:
+        type: string
+      email:
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        type: string
+      id:
+        type: string
+      name:
+        minLength: 3
+        type: string
+      password:
+        minLength: 8
+        type: string
+      phone:
+        minimum: 10
+        type: integer
+      profile_url:
+        type: string
+    required:
+    - age
+    - email
+    - gender
+    - password
+    - phone
+    type: object
+host: localhost:5050
+info:
+  contact:
+    email: mrifurqan89@gmail.com
+    name: API Support
+    url: https://furqanali.vercel.app/
+  description: backen server of nero app. https://github.com/Furqanalimir/nero
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Nero application docs [user and orders api]
+  version: "1.0"
+paths:
+  /order:
+    post:
+      description: Save order data into databae
+      parameters:
+      - description: create order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/forms.OrderSwaggerForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+      security:
+      - ApiKeyAuth: []
+      summary: CreateOrder
+      tags:
+      - Orders
+  /order/:id:
+    get:
+      description: fetch user order by order id
+      parameters:
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+      security:
+      - ApiKeyAuth: []
+      summary: fet order from database
+      tags:
+      - Orders
+  /user/login:
+    post:
+      description: validate user and get token
+      parameters:
+      - description: login user
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/forms.Authenticate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: login response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+      summary: login user
+      tags:
+      - User
+  /user/signup:
+    post:
+      description: Add user data to database
+      parameters:
+      - description: user info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: signup response
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+      security:
+      - ApiKeyAuth: []
+      summary: Add User
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -16,31 +16,6 @@ import (
 )
 
 func Init() {
-	// middlewares only in dev environment
-	// env := config.EnvVars("ENV")
-	// if env == "dev" {
-	// 	gin.SetMode(gin.DebugMode)
-	// }
-	// if env == "prod" {
-	// 	gin.SetMode(gin.ReleaseMode)
-	// }
-	// // initialize gin server
-	// router := gin.Default()
-
-	// // gin middleware
-	// router.Use(gin.Logger())
-	// router.Use(gin.Recovery())
-
-	// //register routes
-	// router.GET("/", func(c *gin.Context) {
-	// 	c.String(http.StatusOK, "pong")
-	// })
-	// controllers.NewUsersHandler(&controllers.UsersController{
-	// 	R: router,
-	// })
-	// controllers.NewOrdersHandler(&controllers.OrdersController{
-	// 	R: router,
-	// })
 	env := config.EnvVars("ENV")
 	router := InitRouter(env)
 	db.Init()
