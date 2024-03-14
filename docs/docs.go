@@ -79,7 +79,7 @@ const docTemplate = `{
                 "tags": [
                     "Orders"
                 ],
-                "summary": "fet order from database",
+                "summary": "fetch order from database by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -105,7 +105,38 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/login": {
+        "/orders": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all user order",
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Fetch all user orders",
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Order"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/forms.ReqResSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
             "post": {
                 "description": "validate user and get token",
                 "produces": [
@@ -138,11 +169,17 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/forms.ReqResSwagger"
                         }
+                    },
+                    "500": {
+                        "description": "error message",
+                        "schema": {
+                            "$ref": "#/definitions/forms.ReqResSwagger"
+                        }
                     }
                 }
             }
         },
-        "/user/signup": {
+        "/users/signup": {
             "post": {
                 "security": [
                     {
@@ -159,24 +196,37 @@ const docTemplate = `{
                 "summary": "Add User",
                 "parameters": [
                     {
-                        "description": "user info",
+                        "description": "add user",
                         "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/forms.UserSignUpSwagger"
                         }
+                    },
+                    {
+                        "type": "file",
+                        "description": "profile",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "signup response",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/forms.ReqResSwagger"
                         }
                     },
                     "400": {
                         "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/forms.ReqResSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "error message",
                         "schema": {
                             "$ref": "#/definitions/forms.ReqResSwagger"
                         }
@@ -188,6 +238,9 @@ const docTemplate = `{
     "definitions": {
         "forms.Authenticate": {
             "type": "object",
+            "required": [
+                "phone"
+            ],
             "properties": {
                 "password": {
                     "type": "string"
@@ -242,6 +295,29 @@ const docTemplate = `{
                 },
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "forms.UserSignUpSwagger": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "integer"
                 }
             }
         },
@@ -302,58 +378,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.User": {
-            "type": "object",
-            "required": [
-                "age",
-                "email",
-                "gender",
-                "password",
-                "phone"
-            ],
-            "properties": {
-                "active": {
-                    "type": "boolean"
-                },
-                "age": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "integer"
-                },
-                "dob": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string",
-                    "enum": [
-                        "male",
-                        "female"
-                    ]
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 3
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 8
-                },
-                "phone": {
-                    "type": "integer",
-                    "minimum": 10
-                },
-                "profile_url": {
                     "type": "string"
                 }
             }

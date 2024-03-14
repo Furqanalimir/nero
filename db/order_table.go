@@ -8,31 +8,41 @@ import (
 )
 
 func CreateOrderTable() {
+	tableName := "Orders"
 	input := &dynamodb.CreateTableInput{
 		AttributeDefinitions: []*dynamodb.AttributeDefinition{
 			{
-				AttributeName: aws.String("order_id"),
+				AttributeName: aws.String("user_id"),
 				AttributeType: aws.String("S"),
 			},
+			// {
+			// 	AttributeName: aws.String("phone"),
+			// 	AttributeType: aws.String("N"),
+			// },
 		},
 		KeySchema: []*dynamodb.KeySchemaElement{
 			{
-				AttributeName: aws.String("order_id"),
-				KeyType:       aws.String("HASH"),
+				AttributeName: aws.String("user_id"),
+				KeyType:       aws.String("HASH"), // HASH denotes the partition key
 			},
+			// {
+			// 	AttributeName: aws.String("phone"),
+			// 	KeyType:       aws.String("RANGE"),
+			// },
 		},
 		ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
 			ReadCapacityUnits:  aws.Int64(10),
 			WriteCapacityUnits: aws.Int64(10),
 		},
-		TableName: aws.String("Orders"),
+		TableName: aws.String(tableName),
 	}
-	result, err := db.CreateTable(input)
+	_, err := db.CreateTable(input)
 	if err != nil {
-		utils.LogError("db/db.go", err, "line-40, func-Init")
+		utils.LogError("db/order_table.go", err, "line-40, func-CreateOrderTable")
 		return
 	}
-	utils.ColoredPrintln(result.GoString(), utils.CYellow)
+	utils.ColoredPrintln("Table "+tableName+" created successfully", utils.CYellow)
+
 }
 
 func DeleteOrderTable() {

@@ -25,11 +25,12 @@ func Init() {
 	}
 	db = dynamodb.New(sess)
 	if config.EnvVars("CREATE_TABLES") == "true" {
-		// user table
+		// Delete tables
 		DeleteUserTable()
-		CreateUserTable()
-		//order table
 		DeleteOrderTable()
+
+		// Create tables
+		CreateUserTable()
 		CreateOrderTable()
 	}
 	listAllTables()
@@ -61,8 +62,9 @@ func listAllTables() {
 			return
 		}
 
+		utils.ColoredPrintln("Tables Name: ", utils.CBlue)
 		for _, n := range result.TableNames {
-			utils.ColoredPrintln("Tables Name: "+*n, utils.CBlue)
+			utils.ColoredPrintln(""+*n, utils.CBlue)
 		}
 
 		// assign the last read tablename as the start for our next call to the ListTables function

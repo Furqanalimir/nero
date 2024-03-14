@@ -20,4 +20,5 @@ func NewOrdersHandler(c *OrdersController) {
 	// protected routes
 	g.POST("/", handlers.HandlerAddOrder)
 	g.GET("/:id", handlers.HandlerGetOrderById)
+	g.GET("/", handlers.HandlerGetOrders)
 }

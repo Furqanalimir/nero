@@ -16,7 +16,7 @@ import (
 // @Tags		Orders
 // @Success		200 {object} forms.ReqResSwagger "create response"
 // @Success		400	{object} forms.ReqResSwagger "error response"
-// @Router		/order	[post]
+// @Router		/orders	[post]
 // @Security	ApiKeyAuth
 func HandlerAddOrder(c *gin.Context) {
 	userId := c.MustGet("user_id")
@@ -46,7 +46,7 @@ func HandlerAddOrder(c *gin.Context) {
 }
 
 // GetOrder		godoc
-// @Summary		fet order from database
+// @Summary		fetch order from database by id
 // @Description	fetch user order by order id
 // @Param		id path string true "order id"
 // @Tags		Orders
@@ -70,5 +70,26 @@ func HandlerGetOrderById(c *gin.Context) {
 		return
 	}
 	utils.ReqResHelper(c, http.StatusOK, ord, nil)
+	return
+}
+
+// Fetch Orders	 godoc
+// @Summary		 Fetch all user orders
+// @Description	 Get all user order
+// @Tags		 Orders
+// @produces	 application/json
+// @Success		 200 {array} models.Order 			"success response"
+// @Success		 400 {object} forms.ReqResSwagger	"error response"
+// @Router		 /orders	[get]
+// @Security	 ApiKeyAuth
+func HandlerGetOrders(c *gin.Context) {
+	userId := c.GetString("user_id")
+	err := models.GetAllUserOrders(userId)
+	if err != nil {
+		utils.LogError("handlers/orders.go", err, " func-HandlerGetOrders, line-80, order.GetAllUserOrders")
+		utils.ReqResHelper(c, http.StatusBadRequest, nil, err)
+		return
+	}
+	utils.ReqResHelper(c, http.StatusOK, "OK", nil)
 	return
 }

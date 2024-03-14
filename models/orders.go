@@ -1,6 +1,7 @@
 package models
 
 import (
+	"log"
 	"nero/db"
 	"time"
 
@@ -50,8 +51,10 @@ func (o *Order) CreateOrder() (*Order, error) {
 	}
 	return o, nil
 }
+
 func (o *Order) GetById(id string) (*Order, error) {
 	db := db.GetDB()
+
 	params := &dynamodb.GetItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"order_id": {
@@ -73,6 +76,32 @@ func (o *Order) GetById(id string) (*Order, error) {
 	}
 	return order, nil
 }
+
+func GetAllUserOrders(userId string) error {
+	db := db.GetDB()
+	params := &dynamodb.GetItemInput{
+		Key: map[string]*dynamodb.AttributeValue{
+			"user_id": {
+				S: aws.String(userId),
+			},
+		},
+		TableName:      aws.String("Orders"),
+		ConsistentRead: aws.Bool(true),
+	}
+
+	resp, err := db.GetItem(params)
+	if err != nil {
+		return err
+	}
+
+	var order *Order
+	if err := dynamodbattribute.UnmarshalMap(resp.Item, &order); err != nil {
+		return err
+	}
+	log.Println("order: ", order)
+	return nil
+}
+
 func (o *Order) Validate() error {
 	validate := validator.New()
 	return validate.Struct(o)

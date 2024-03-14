@@ -5,6 +5,8 @@ definitions:
         type: string
       phone:
         type: integer
+    required:
+    - phone
     type: object
   forms.InfoSwaggerForm:
     properties:
@@ -36,6 +38,21 @@ definitions:
         $ref: '#/definitions/forms.data'
       error:
         type: string
+    type: object
+  forms.UserSignUpSwagger:
+    properties:
+      age:
+        type: integer
+      email:
+        type: string
+      gender:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: integer
     type: object
   forms.data:
     type: object
@@ -78,43 +95,6 @@ definitions:
     - tax
     - total
     - user_id
-    type: object
-  models.User:
-    properties:
-      active:
-        type: boolean
-      age:
-        type: integer
-      createdAt:
-        type: integer
-      dob:
-        type: string
-      email:
-        type: string
-      gender:
-        enum:
-        - male
-        - female
-        type: string
-      id:
-        type: string
-      name:
-        minLength: 3
-        type: string
-      password:
-        minLength: 8
-        type: string
-      phone:
-        minimum: 10
-        type: integer
-      profile_url:
-        type: string
-    required:
-    - age
-    - email
-    - gender
-    - password
-    - phone
     type: object
 host: localhost:5050
 info:
@@ -177,10 +157,29 @@ paths:
             $ref: '#/definitions/forms.ReqResSwagger'
       security:
       - ApiKeyAuth: []
-      summary: fet order from database
+      summary: fetch order from database by id
       tags:
       - Orders
-  /user/login:
+  /orders:
+    get:
+      description: Get all user order
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+      security:
+      - ApiKeyAuth: []
+      summary: Fetch all user orders
+      tags:
+      - Orders
+  /users/login:
     post:
       description: validate user and get token
       parameters:
@@ -201,28 +200,41 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/forms.ReqResSwagger'
+        "500":
+          description: error message
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
       summary: login user
       tags:
       - User
-  /user/signup:
+  /users/signup:
     post:
       description: Add user data to database
       parameters:
-      - description: user info
+      - description: add user
         in: body
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/forms.UserSignUpSwagger'
+      - description: profile
+        in: formData
+        name: image
+        required: true
+        type: file
       produces:
       - application/json
       responses:
         "200":
           description: signup response
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/forms.ReqResSwagger'
         "400":
           description: error response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+        "500":
+          description: error message
           schema:
             $ref: '#/definitions/forms.ReqResSwagger'
       security:
