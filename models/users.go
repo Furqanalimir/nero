@@ -17,15 +17,15 @@ import (
 )
 
 type User struct {
-	ID         string `form:"user_id,omitempty"`
-	Name       string `form:"name" validate:"min=3"`
-	Email      string `form:"email" validate:"required,email"`
-	ProflieUrl string `form:"profile" binding:"required"`
-	Password   string `form:"password" validate:"required,min=8"`
-	Phone      int    `form:"phone" validate:"required,numeric,min=10"`
-	Age        int    `form:"age" validate:"required,gt=12"`
-	Gender     string `form:"gender" validate:"required,oneof=male female"`
-	Active     bool   `form:"active"`
+	ID         string `json:"user_id,omitempty"`
+	Name       string `json:"name" validate:"min=3"`
+	Email      string `json:"email" validate:"required,email"`
+	ProflieUrl string `json:"profile"`
+	Password   string `json:"password" validate:"required,min=8"`
+	Phone      int    `json:"phone" validate:"required,numeric,min=10"`
+	Age        int    `json:"age" validate:"required,gt=12"`
+	Gender     string `json:"gender" validate:"required,oneof=male female"`
+	Active     bool   `json:"active"`
 	CreatedAt  int64
 	UpdatedAt  int64
 	DeletedAt  int64
@@ -34,12 +34,13 @@ type User struct {
 func (u *User) Create() (*User, error) {
 	// initialize database
 	db := db.GetDB()
+	// hash password
 	pass, err := u.hashPassword()
 	if err != nil {
 		return nil, errors.New("Could not hash password, something went wrong")
 	}
-	id := uuid.New()
-	u.ID = id.String()
+	// set fields
+	u.ID = uuid.New().String()
 	u.Password = pass
 	u.Active = true
 	u.CreatedAt = time.Now().Unix()
@@ -50,6 +51,7 @@ func (u *User) Create() (*User, error) {
 		utils.LogError("models/user.go", err, "line-52, converting user data")
 		return nil, errors.New("error when try to convert user data to dynamodbattribute")
 	}
+
 	params := &dynamodb.PutItemInput{
 		Item:      item,
 		TableName: aws.String("Users"),

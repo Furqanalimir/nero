@@ -23,48 +23,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/order": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Save order data into databae",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Orders"
-                ],
-                "summary": "CreateOrder",
-                "parameters": [
-                    {
-                        "description": "create order",
-                        "name": "order",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/forms.OrderSwaggerForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "create response",
-                        "schema": {
-                            "$ref": "#/definitions/forms.ReqResSwagger"
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/forms.ReqResSwagger"
-                        }
-                    }
-                }
-            }
-        },
         "/order/:id": {
             "get": {
                 "security": [
@@ -134,6 +92,46 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Save order data into databae",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "CreateOrder",
+                "parameters": [
+                    {
+                        "description": "create order",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.OrderSwaggerForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create response",
+                        "schema": {
+                            "$ref": "#/definitions/forms.ReqResSwagger"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/forms.ReqResSwagger"
+                        }
+                    }
+                }
             }
         },
         "/users/login": {
@@ -181,11 +179,6 @@ const docTemplate = `{
         },
         "/users/signup": {
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Add user data to database",
                 "produces": [
                     "application/json"
@@ -196,18 +189,39 @@ const docTemplate = `{
                 "summary": "Add User",
                 "parameters": [
                     {
-                        "description": "add user",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/forms.UserSignUpSwagger"
-                        }
+                        "type": "integer",
+                        "name": "age",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "gender",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "password",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "phone",
+                        "in": "formData"
                     },
                     {
                         "type": "file",
                         "description": "profile",
-                        "name": "image",
+                        "name": "profile",
                         "in": "formData",
                         "required": true
                     }
@@ -295,29 +309,6 @@ const docTemplate = `{
                 },
                 "error": {
                     "type": "string"
-                }
-            }
-        },
-        "forms.UserSignUpSwagger": {
-            "type": "object",
-            "properties": {
-                "age": {
-                    "type": "integer"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "integer"
                 }
             }
         },

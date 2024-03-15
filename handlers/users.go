@@ -15,15 +15,14 @@ import (
 // Signup		godc
 // @Summary		Add User
 // @Description	Add user data to database
-// @Param		user body forms.UserSignUpSwagger true "add user"
-// @Param 		image formData file true "profile"
+// @Param		user formData forms.UserSignUpSwagger true "add user"
+// @Param 		profile formData file true "profile"
 // @Tags		User
 // @produce		application/json
 // @Success		200 {object} forms.ReqResSwagger	"signup response"
 // @Success		400	{object} forms.ReqResSwagger 	"error response"
 // @Success		500	{object} forms.ReqResSwagger 	"error message"
 // @Router		/users/signup 	[post]
-// @Security	ApiKeyAuth
 func HandlerSignUp(c *gin.Context) {
 	// var user = &models.User{}
 	err := c.Request.ParseMultipartForm(1 << 20) // 1 Mb limit
@@ -33,14 +32,15 @@ func HandlerSignUp(c *gin.Context) {
 		return
 	}
 
+	// create user object from form data
 	user := models.CreateUserObj(c)
 
-	file, _ := c.FormFile("profile")
-	filePath := "assets/profile/" + fmt.Sprintf("%d_%s", time.Now().UnixNano(), file.Filename)
-	c.SaveUploadedFile(file, filePath)
-
-	user.ProflieUrl = filePath
-	fmt.Println("user: ", user)
+	file, err := c.FormFile("profile")
+	if err == nil {
+		filePath := "assets/profile/" + fmt.Sprintf("%d_%s", time.Now().UnixNano(), file.Filename)
+		c.SaveUploadedFile(file, filePath)
+		user.ProflieUrl = filePath
+	}
 
 	err = user.Validate()
 	if err != nil {
@@ -80,7 +80,6 @@ func HandlerSignUp(c *gin.Context) {
 // @Success 	400 {object} forms.ReqResSwagger "error response"
 // @Success		500	{object} forms.ReqResSwagger "error message"
 // @Router		/users/login	[post]
-// @Securit		ApiKeyAuth
 func HandlerLogin(c *gin.Context) {
 	u := &forms.Authenticate{}
 	if err := c.ShouldBindJSON(u); err != nil {

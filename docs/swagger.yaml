@@ -39,21 +39,6 @@ definitions:
       error:
         type: string
     type: object
-  forms.UserSignUpSwagger:
-    properties:
-      age:
-        type: integer
-      email:
-        type: string
-      gender:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      phone:
-        type: integer
-    type: object
   forms.data:
     type: object
   models.Info:
@@ -109,32 +94,6 @@ info:
   title: Nero application docs [user and orders api]
   version: "1.0"
 paths:
-  /order:
-    post:
-      description: Save order data into databae
-      parameters:
-      - description: create order
-        in: body
-        name: order
-        required: true
-        schema:
-          $ref: '#/definitions/forms.OrderSwaggerForm'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: create response
-          schema:
-            $ref: '#/definitions/forms.ReqResSwagger'
-        "400":
-          description: error response
-          schema:
-            $ref: '#/definitions/forms.ReqResSwagger'
-      security:
-      - ApiKeyAuth: []
-      summary: CreateOrder
-      tags:
-      - Orders
   /order/:id:
     get:
       description: fetch user order by order id
@@ -179,6 +138,31 @@ paths:
       summary: Fetch all user orders
       tags:
       - Orders
+    post:
+      description: Save order data into databae
+      parameters:
+      - description: create order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/forms.OrderSwaggerForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/forms.ReqResSwagger'
+      security:
+      - ApiKeyAuth: []
+      summary: CreateOrder
+      tags:
+      - Orders
   /users/login:
     post:
       description: validate user and get token
@@ -211,15 +195,27 @@ paths:
     post:
       description: Add user data to database
       parameters:
-      - description: add user
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/forms.UserSignUpSwagger'
+      - in: formData
+        name: age
+        type: integer
+      - in: formData
+        name: email
+        type: string
+      - in: formData
+        name: gender
+        type: string
+      - in: formData
+        name: name
+        type: string
+      - in: formData
+        name: password
+        type: string
+      - in: formData
+        name: phone
+        type: integer
       - description: profile
         in: formData
-        name: image
+        name: profile
         required: true
         type: file
       produces:
@@ -237,8 +233,6 @@ paths:
           description: error message
           schema:
             $ref: '#/definitions/forms.ReqResSwagger'
-      security:
-      - ApiKeyAuth: []
       summary: Add User
       tags:
       - User
