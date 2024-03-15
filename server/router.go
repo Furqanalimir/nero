@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -27,6 +28,7 @@ func InitRouter(env string) *gin.Engine {
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// gin middleware
+	router.Use(gzip.Gzip(gzip.DefaultCompression)) // compressor middleware
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	// CORS for https://foo.com and https://github.com origins, allowing:
@@ -35,8 +37,8 @@ func InitRouter(env string) *gin.Engine {
 	// - Credentials share
 	// - Preflight requests cached for 12 hours
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"*"},
+		AllowOrigins:     []string{"*"}, // allow all origins
+		AllowMethods:     []string{"*"}, // allow all methods
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,

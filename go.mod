@@ -5,6 +5,7 @@ go 1.22.0
 require (
 	github.com/aws/aws-sdk-go v1.50.23
 	github.com/gin-contrib/cors v1.7.0
+	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
